@@ -8,6 +8,10 @@ def is_boolean_set_algebra(universe, test_set):
     return True
 
 
+def compose(universe_relation, relation1, relation2):
+    return set([(x, z) for (x, y) in relation1 for (t, z) in relation2 if t == y and (x, z) in universe_relation])
+
+
 def converse(relation):
     return set([(y, x) for (x, y) in relation])
 
