@@ -15,6 +15,9 @@ class BSA:
     def __init__(self, domain: Collection, relations: Relation):
         self.domain = domain
         self.relations = relations
+        for rel in relations:
+            if not self.inverse(rel) in relations:
+                raise ValueError("Given algebra is not a boolean set algebra")
 
     @lru_cache(maxsize=1)
     def universe(self):
