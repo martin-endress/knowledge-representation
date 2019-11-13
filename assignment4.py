@@ -12,13 +12,13 @@ def is_boolean_set_algebra(universe, relations):
     return True
 
 
-def compose(universe_relation, relation1, relation2):
+def compose(universe, relation1, relation2):
     """
     O(1)    for n = |B|
     O(r^2)  for r = max(|relation|)
         (Improvement possible if z is in a hash table. Relation would be of type table(key -> list))
     """
-    return set([(x, z) for (x, y) in relation1 for (t, z) in relation2 if t == y and (x, z) in universe_relation])
+    return set([(x, z) for (x, y) in relation1 for (t, z) in relation2 if t == y and (x, z) in universe])
 
 
 def converse(relation):
@@ -37,7 +37,7 @@ def inverse(universe_relation, relation):
     return universe_relation.difference(relation)
 
 
-universe = {1, 2, 3, 4}
+domain = {1, 2, 3, 4}
 
 empty = set()
 lt = {(1, 2), (1, 3), (1, 4), (2, 3), (2, 4), (3, 4)}
@@ -49,7 +49,7 @@ let = {(1, 1), (1, 2), (1, 3), (1, 4), (2, 2),
 get = {(4, 4), (4, 3), (4, 2), (4, 1), (3, 3),
        (3, 2), (3, 1), (2, 2), (2, 1), (1, 1)}
 eq = {(1, 1), (2, 2), (3, 3), (4, 4)}
-U = set(itertools.product(universe, universe))
+universe = set(itertools.product(domain, domain))
 
 no_bsa = [lt, gt]
 bsa = [empty, lt, gt, ne, eq, let, get, U]
