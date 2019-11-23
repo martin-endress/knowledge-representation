@@ -1,19 +1,26 @@
 import itertools
+from functools import reduce
 from typing import Any, Callable, Collection, Dict, FrozenSet, Generator, Set, Tuple, Union
 
-# def is_boolean_set_algebra(relations):
-#    for rel in relations:
-#        if not complement(rel) in relations:
-#            return False
-#    return True
+
+def join(relation1, relation2):
+    return relation1 | relation2
+
+
+def intersect(relation1, relation2):
+    return relation1 & relation2
 
 
 class QualitativeCalculi:
     def __init__(self, relations: [str], converse: Dict[str, str], composition: Dict[str, Dict[str, str]]):
         self.relations = relations
-        self.relationsBinary = map(self.relToBinary, relations)
-        self.converse = converse
-        self.composition = composition
+        self.relationsBinary = list(map(self.relToBinary, relations))
+        self.converse = {self.relToBinary(k): self.relToBinary(
+            v) for k, v in converse.items()}
+        self.composition = {self.relToBinary(k):
+                            {self.relToBinary(k1): reduce(join, map(self.relToBinary, v1))
+                             for k1, v1 in v.items()}
+                            for k, v in composition.items()}
 
     def __str__(self):
         return 'relations:\n' + str(self.relations) + '\n' + \
@@ -22,18 +29,25 @@ class QualitativeCalculi:
 
     def compose(self, relation1, relation2):
         """
-        Implement me.. TODO
+        join all compositions from both relations using composition table of base relations
         """
-        return relation1
-
-    def join(self, relation1, relation2):
-        return relation1 | relation2
-
-    def intersect(self, relation1, relation2):
-        return relation1 & relation2
+        composite = 0
+        for rel1 in self.relationsBinary:
+            for rel2 in self.relationsBinary:
+                if intersect(relation1, rel1):
+                    if intersect(relation2, rel2):
+                        composite = join(
+                            composite, self.composition[rel1][rel2])
+        return composite
 
     def complement(self, relation):
-        return ~relation & (pow(2, len(self.relations))-1)
+        return join(~relation, pow(2, len(self.relations))-1)
+
+    def is_boolean_set_algebra(self):
+        """
+        TODO implement
+        """
+        return False
 
     def relToBinary(self, relation):
         rel = 0
