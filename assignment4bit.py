@@ -1,4 +1,5 @@
 import itertools
+from typing import Any, Callable, Collection, Dict, FrozenSet, Generator, Set, Tuple, Union
 
 # def is_boolean_set_algebra(relations):
 #    for rel in relations:
@@ -7,38 +8,55 @@ import itertools
 #    return True
 
 
-def compose(relation1, relation2):
-    """
-     °  100 010 001
-    100 100 100 111
-    010 100 010 001
-    001 111 001 001
-    """
-    composition = [[0b100, 0b100, 0b111],
-                   [0b100, 0b010, 0b001],
-                   [0b111, 0b001, 0b001]]
-    return composition[1][1]
+class QualitativeCalculi:
+    def __init__(self, relations: [str], converse: Dict[str, str], composition: Dict[str, Dict[str, str]]):
+        self.relations = relations
+        self.relationsBinary = map(self.relToBinary, relations)
+        self.converse = converse
+        self.composition = composition
+
+    def __str__(self):
+        return 'relations:\n' + str(self.relations) + '\n' + \
+            'converse:\n' + str(self.converse) + '\n' + \
+            'composition:\n' + str(self.composition)
+
+    def compose(self, relation1, relation2):
+        """
+        Implement me.. TODO
+        """
+        return relation1
+
+    def join(self, relation1, relation2):
+        return relation1 | relation2
+
+    def intersect(self, relation1, relation2):
+        return relation1 & relation2
+
+    def complement(self, relation):
+        return ~relation & (pow(2, len(self.relations))-1)
+
+    def relToBinary(self, relation):
+        rel = 0
+        for idx, value in enumerate(self.relations):
+            if value in relation:
+                rel = rel | pow(2, idx)
+        return rel
+
+    def relToString(self, relation):
+        rel = []
+        for idx, value in enumerate(self.relations):
+            if (pow(2, idx) & relation != 0):
+                rel.append(value)
+        return rel
 
 
-def join(relation1, relation2):
-    return relation1 | relation2
-
-
-def intersect(relation1, relation2):
-    return relation1 & relation2
-
-
-def complement(relation):
-    return ~relation
-
-
-def readFile(fileName):
+def parseFile(fileName):
     with open(fileName, 'r') as relationsFile:
-        relationsFile.readline()                # header
+        relationsFile.readline()                    # header
         relations = relationsFile.readline().split()
-        relationsFile.readline()                # blank line
-        relationsFile.readline()                # header
-        line = relationsFile.readline().strip()  # converse relations
+        relationsFile.readline()                    # blank line
+        relationsFile.readline()                    # header
+        line = relationsFile.readline().strip()     # converse relations
         converse = dict()
         while line:
             converseParts = line.split()
@@ -47,7 +65,7 @@ def readFile(fileName):
                 quit()
             converse[converseParts[0]] = converseParts[1]
             line = relationsFile.readline().strip()
-        relationsFile.readline()                # header
+        relationsFile.readline()                    # header
         line = relationsFile.readline().strip()
         composition = dict()
         while line:
@@ -63,7 +81,14 @@ def readFile(fileName):
                 quit()
             if compositionParts[0] not in composition:
                 composition[compositionParts[0]] = dict()
-            composition[compositionParts[0]][compositionParts[1]] = compositionParts[2:]
+            composition[compositionParts[0]
+                        ][compositionParts[1]] = compositionParts[2:]
             line = relationsFile.readline().strip()
+        return QualitativeCalculi(relations, converse, composition)
 
-readFile('allen.txt')
+
+if __name__ == '__main__':
+    # allen = parseFile('allen.txt')
+    # print(allen)
+    linear = parseFile('linear.txt')
+    print(linear)
