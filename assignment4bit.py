@@ -33,8 +33,8 @@ class QualitativeCalculi:
         """
         composite = 0
         for rel1 in self.relationsBinary:
-            for rel2 in self.relationsBinary:
-                if intersect(relation1, rel1):
+            if intersect(relation1, rel1):
+                for rel2 in self.relationsBinary:
                     if intersect(relation2, rel2):
                         composite = join(
                             composite, self.composition[rel1][rel2])
@@ -45,16 +45,17 @@ class QualitativeCalculi:
 
     def is_boolean_set_algebra(self):
         """
-        TODO implement
+        In our representation, the property boolean set algebra is implied.
+        The set of all possible relations 2^R is not explicitly stated
         """
-        return False
+        return True
 
     def relToBinary(self, relation):
-        rel = 0
         for idx, value in enumerate(self.relations):
-            if value in relation:
-                rel = rel | pow(2, idx)
-        return rel
+            if value == relation:
+                return pow(2, idx)
+        print("warning, relation " + relation + " does not exist. Returning empty relation..")
+        return 0
 
     def relToString(self, relation):
         rel = []
@@ -102,7 +103,7 @@ def parseFile(fileName):
 
 
 if __name__ == '__main__':
-    # allen = parseFile('allen.txt')
-    # print(allen)
+    allen = parseFile('allen.txt')
+    print(allen)
     linear = parseFile('linear.txt')
     print(linear)
