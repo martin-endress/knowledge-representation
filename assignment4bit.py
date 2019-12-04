@@ -94,12 +94,20 @@ class PointCalculus:
             return self.relations[fromR][toR]
         else:
             return self.calculus.complement(0)
+    
+    def getNodes(self):
+        nodes = set()
+        for k1, v in self.relations.items():
+            for k2, _ in v.items():
+                nodes.add(k2)
+            nodes.add(k1)
+        return list(nodes)
 
     def aclosure(self):
         s = True
         while s:
             s = False
-            for i, j, k in itertools.product(['0', '1', '2', '3'], repeat=3):  # FIXME
+            for i, j, k in itertools.product(self.getNodes(), repeat=3):
                 cij = self.lookup(i, j)
                 cjk = self.lookup(j, k)
                 cik = self.lookup(i, k)
@@ -109,6 +117,8 @@ class PointCalculus:
                     self.relations = insert(self.relations, i, k, newCik)
                     self.relations = insert(
                         self.relations, k, i, self.calculus.computeConverse(newCik))
+                    if newCik == 0:
+                        return False
         print(self.relations)
 
 
