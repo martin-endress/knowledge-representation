@@ -3,7 +3,7 @@ from functools import reduce
 from typing import Any, Callable, Collection, Dict, FrozenSet, Generator, Set, Tuple, Union
 
 
-def join(relation1, relation2):
+def union(relation1, relation2):
     return relation1 | relation2
 
 
@@ -11,37 +11,45 @@ def intersect(relation1, relation2):
     return relation1 & relation2
 
 
-class QualitativeCalculi:
+class BooleanSetAlgebra:
     def __init__(self, relations: [str], converse: Dict[str, str], composition: Dict[str, Dict[str, str]]):
         self.relations = relations
+        # map to binary representation
         self.relationsBinary = list(map(self.relToBinary, relations))
         self.converse = {self.relToBinary(k): self.relToBinary(
             v) for k, v in converse.items()}
         self.composition = {self.relToBinary(k):
-                            {self.relToBinary(k1): reduce(join, map(self.relToBinary, v1))
+                            {self.relToBinary(k1): reduce(union, map(self.relToBinary, v1))
                              for k1, v1 in v.items()}
                             for k, v in composition.items()}
 
     def __str__(self):
         return 'relations:\n' + str(self.relations) + '\n' + \
             'converse:\n' + str(self.converse) + '\n' + \
-            'composition:\n' + str(self.composition)
+            'composition:\n' + str(self.composition) + '\n'
 
     def compose(self, relation1, relation2):
         """
-        join all compositions from both relations using composition table of base relations
+        union all compositions from both relations using composition table of base relations
         """
         composite = 0
         for rel1 in self.relationsBinary:
             if intersect(relation1, rel1):
                 for rel2 in self.relationsBinary:
                     if intersect(relation2, rel2):
-                        composite = join(
+                        composite = union(
                             composite, self.composition[rel1][rel2])
         return composite
 
+    def computeConverse(self, relation):
+        conv = 0
+        for rel1 in self.relationsBinary:
+            if intersect(relation, rel1):
+                conv = union(conv, self.converse[rel1])
+        return conv
+
     def complement(self, relation):
-        return join(~relation, pow(2, len(self.relations))-1)
+        return union(~relation, pow(2, len(self.relations))-1)
 
     def is_boolean_set_algebra(self):
         """
@@ -54,7 +62,8 @@ class QualitativeCalculi:
         for idx, value in enumerate(self.relations):
             if value == relation:
                 return pow(2, idx)
-        print("warning, relation " + relation + " does not exist. Returning empty relation..")
+        print("warning, relation " + relation +
+              " does not exist. Returning empty relation..")
         return 0
 
     def relToString(self, relation):
@@ -65,13 +74,51 @@ class QualitativeCalculi:
         return rel
 
 
-def parseFile(fileName):
-    with open(fileName, 'r') as relationsFile:
-        relationsFile.readline()                    # header
-        relations = relationsFile.readline().split()
-        relationsFile.readline()                    # blank line
-        relationsFile.readline()                    # header
-        line = relationsFile.readline().strip()     # converse relations
+def insert(relations, fromR, toR, relation):
+    if not(fromR in relations):
+        relations[fromR] = dict()
+    relations[fromR][toR] = relation
+    return relations
+
+
+class PointCalculus:
+    def __init__(self, calculus, relations):
+        self.calculus = calculus
+        self.relations = relations
+
+    def __str__(self):
+        return 'Calculus: \n' + str(self.calculus) + 'Relations:\n' + str(self.relations) + '\n'
+
+    def lookup(self, fromR, toR):
+        if fromR in self.relations and toR in self.relations[fromR]:
+            return self.relations[fromR][toR]
+        else:
+            return self.calculus.complement(0)
+
+    def aclosure(self):
+        s = True
+        while s:
+            s = False
+            for i, j, k in itertools.product(['0', '1', '2', '3'], repeat=3):  # FIXME
+                cij = self.lookup(i, j)
+                cjk = self.lookup(j, k)
+                cik = self.lookup(i, k)
+                newCik = intersect(cik, self.calculus.compose(cij, cjk))
+                if cik != newCik:
+                    s = True
+                    self.relations = insert(self.relations, i, k, newCik)
+                    self.relations = insert(
+                        self.relations, k, i, self.calculus.computeConverse(newCik))
+        print(self.relations)
+
+
+def parseCalculus(fileName):
+    with open(fileName, 'r') as calculusFile:
+        calculusFile.readline()                    # header
+        relations = calculusFile.readline().split()
+        calculusFile.readline()                    # blank line
+        calculusFile.readline()                    # header
+        line = calculusFile.readline().strip()     # converse relations
         converse = dict()
         while line:
             converseParts = line.split()
@@ -79,9 +126,9 @@ def parseFile(fileName):
                 print("illegal converse input")
                 quit()
             converse[converseParts[0]] = converseParts[1]
-            line = relationsFile.readline().strip()
-        relationsFile.readline()                    # header
-        line = relationsFile.readline().strip()
+            line = calculusFile.readline().strip()
+        calculusFile.readline()                    # header
+        line = calculusFile.readline().strip()
         composition = dict()
         while line:
             compositionParts = line.split()
@@ -98,12 +145,39 @@ def parseFile(fileName):
                 composition[compositionParts[0]] = dict()
             composition[compositionParts[0]
                         ][compositionParts[1]] = compositionParts[2:]
-            line = relationsFile.readline().strip()
-        return QualitativeCalculi(relations, converse, composition)
+            line = calculusFile.readline().strip()
+        return BooleanSetAlgebra(relations, converse, composition)
+
+
+def parsePointRelations(calculus, fileName):
+    lines = [line.strip() for line in open(fileName)]
+    relations = dict()
+    cspInstances = []
+    currentRel = []
+    for line in lines:
+        if line:
+            currentRel.append(line)
+        else:
+            cspInstances.append(currentRel)
+            currentRel = []
+    for cspInstance in cspInstances:
+        for line in cspInstance[1:-1]:
+            print(line)
+            parts = line.split()
+            fromRel = parts[0]
+            toRel = parts[1]
+            rel = sum(map(calculus.relToBinary, parts[3:-1]))
+
+            relations = insert(relations, fromRel, toRel, rel)
+            relations = insert(relations, toRel, fromRel,
+                               calculus.computeConverse(rel))
+            print(rel)
+        return PointCalculus(calculus, relations)  # FIXME
 
 
 if __name__ == '__main__':
-    allen = parseFile('allen.txt')
-    print(allen)
-    linear = parseFile('linear.txt')
-    print(linear)
+    allen = parseCalculus('allen.txt')
+    linear = parseCalculus('linear.txt')
+
+    linearRelations = parsePointRelations(linear, 'pointCalculus.txt')
+    print(str(linearRelations))
