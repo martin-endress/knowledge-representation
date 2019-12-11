@@ -119,6 +119,7 @@ class ConstraintSatisfactionProblem:
         elif version == 15:
             result = self.aclosure15()
         else:
+            print("invalid version " + str(version))
             result = -1
         print(time.time() * 1_000_000 - start)
         print("Result = " + str(result))
@@ -247,9 +248,8 @@ def parse_csp(calculus, fileName):
     return qcsps
 
 
-if __name__ == '__main__':
+def point_calculus_test():
     linear_calculus = parseCalculus('linear.txt')
-    allen_calculus = parseCalculus('allen.txt')
 
     print("1")
     for csp in parse_csp(linear_calculus, 'pointCalculus.txt'):
@@ -260,4 +260,11 @@ if __name__ == '__main__':
     for csp in parse_csp(linear_calculus, 'pointCalculus.txt'):
         csp.aclosure_time(15)
         print()
+
+
+if __name__ == '__main__':
+    # point_calculus_test()
+    allen_calculus = parseCalculus('allen.txt')
     # allen_csps = parse_csp(allen_calculus, '30x500_m_3_allen_eq1.csp')
+    homework = parse_csp(allen_calculus, "closure_interval_relations.csp")[0]
+    homework.aclosure_time(1)
