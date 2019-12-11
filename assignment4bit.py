@@ -1,5 +1,6 @@
 import itertools
 import time
+import queue
 from toolz import valmap
 from functools import reduce
 
@@ -110,20 +111,25 @@ class ConstraintSatisfactionProblem:
             nodes.add(k1)
         return list(nodes)
 
-    def aclosure_time(self):
+    def aclosure_time(self, version):
         print("Running aclosure for " + self.additional_info)
         start = time.time() * 1_000_000
-        result = self.aclosure()
+        if version == 1:
+            result = self.aclosure1()
+        elif version == 15:
+            result = self.aclosure15()
+        else:
+            result = -1
         print(time.time() * 1_000_000 - start)
         print("Result = " + str(result))
         return result
 
-    def aclosure(self):
+    def aclosure1(self):
         s = True
         while s:
             s = False
             for i, j, k in itertools.product(self.getNodes(), repeat=3):
-                if i==j or j==k or i==k:
+                if i == j or j == k or i == k:
                     continue
                 cij = self.lookup(i, j)
                 cjk = self.lookup(j, k)
@@ -135,6 +141,44 @@ class ConstraintSatisfactionProblem:
                     self.relations = insert_relation(self.calculus,
                                                      self.relations, i, k, newCik)
                     if newCik == 0:
+                        return False
+        return True
+
+    def aclosure15(self):
+        edges = queue.SimpleQueue()
+        for i, j in itertools.product(self.getNodes(), repeat=2):
+            if i != j:
+                edges.put((i, j))
+        while not(edges.empty()):
+            edge = edges.get()
+            i = edge[0]
+            j = edge[1]
+            for k in [k for k in self.getNodes() if (k != i and k != j)]:
+                # lookup
+                cij = self.lookup(i, j)
+                cjk = self.lookup(j, k)
+                cik = self.lookup(i, k)
+                ckj = self.lookup(k, j)
+                cki = self.lookup(k, i)
+
+                # calculate possible refinement
+                newCik = intersect(
+                    cik, self.calculus.compute_composition(cij, cjk))
+                newCkj = intersect(
+                    ckj, self.calculus.compute_composition(cki, cij))
+
+                # update
+                if cik != newCik:
+                    if newCik == 0:
+                        return False
+                    self.relations = insert_relation(self.calculus,
+                                                     self.relations, i, k, newCik)
+                    edges.put((i, k))
+                if ckj != newCkj:
+                    self.relations = insert_relation(self.calculus,
+                                                     self.relations, k, j, newCkj)
+                    edges.put((k, j))
+                    if newCkj == 0:
                         return False
         return True
 
@@ -207,8 +251,13 @@ if __name__ == '__main__':
     linear_calculus = parseCalculus('linear.txt')
     allen_calculus = parseCalculus('allen.txt')
 
-    linear_csps = parse_csp(linear_calculus, 'pointCalculus.txt')
-    for csp in linear_csps:
-        csp.aclosure_time()
+    print("1")
+    for csp in parse_csp(linear_calculus, 'pointCalculus.txt'):
+        csp.aclosure_time(1)
         print()
-    #allen_csps = parse_csp(allen_calculus, '30x500_m_3_allen_eq1.csp')
+
+    print("1.5")
+    for csp in parse_csp(linear_calculus, 'pointCalculus.txt'):
+        csp.aclosure_time(15)
+        print()
+    # allen_csps = parse_csp(allen_calculus, '30x500_m_3_allen_eq1.csp')
