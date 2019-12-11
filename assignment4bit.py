@@ -1,6 +1,7 @@
 import itertools
+import time
+from toolz import valmap
 from functools import reduce
-from typing import Any, Callable, Collection, Dict, FrozenSet, Generator, Set, Tuple, Union
 
 
 def union(relation1, relation2):
@@ -11,15 +12,15 @@ def intersect(relation1, relation2):
     return relation1 & relation2
 
 
-class BooleanSetAlgebra:
-    def __init__(self, relations: [str], converse: Dict[str, str], composition: Dict[str, Dict[str, str]]):
+class PointCalculus:
+    def __init__(self, relations, converse, composition):
         self.relations = relations
         # map to binary representation
-        self.relationsBinary = list(map(self.relToBinary, relations))
-        self.converse = {self.relToBinary(k): self.relToBinary(
+        self.relationsBinary = list(map(self.relation_to_binary, relations))
+        self.converse = {self.relation_to_binary(k): self.relation_to_binary(
             v) for k, v in converse.items()}
-        self.composition = {self.relToBinary(k):
-                            {self.relToBinary(k1): reduce(union, map(self.relToBinary, v1))
+        self.composition = {self.relation_to_binary(k):
+                            {self.relation_to_binary(k1): reduce(union, map(self.relation_to_binary, v1))
                              for k1, v1 in v.items()}
                             for k, v in composition.items()}
 
@@ -28,7 +29,7 @@ class BooleanSetAlgebra:
             'converse:\n' + str(self.converse) + '\n' + \
             'composition:\n' + str(self.composition) + '\n'
 
-    def compose(self, relation1, relation2):
+    def compute_composition(self, relation1, relation2):
         """
         union all compositions from both relations using composition table of base relations
         """
@@ -41,15 +42,15 @@ class BooleanSetAlgebra:
                             composite, self.composition[rel1][rel2])
         return composite
 
-    def computeConverse(self, relation):
+    def compute_converse(self, relation):
         conv = 0
         for rel1 in self.relationsBinary:
             if intersect(relation, rel1):
                 conv = union(conv, self.converse[rel1])
         return conv
 
-    def complement(self, relation):
-        return union(~relation, pow(2, len(self.relations))-1)
+    def compute_complement(self, relation):
+        return intersect(~relation, pow(2, len(self.relations))-1)
 
     def is_boolean_set_algebra(self):
         """
@@ -58,7 +59,7 @@ class BooleanSetAlgebra:
         """
         return True
 
-    def relToBinary(self, relation):
+    def relation_to_binary(self, relation):
         for idx, value in enumerate(self.relations):
             if value == relation:
                 return pow(2, idx)
@@ -66,7 +67,7 @@ class BooleanSetAlgebra:
               " does not exist. Returning empty relation..")
         return 0
 
-    def relToString(self, relation):
+    def relation_to_string(self, relation):
         rel = []
         for idx, value in enumerate(self.relations):
             if (pow(2, idx) & relation != 0):
@@ -74,27 +75,33 @@ class BooleanSetAlgebra:
         return rel
 
 
-def insert(relations, fromR, toR, relation):
+def insert_relation(calculus, relations, fromR, toR, relation):
     if not(fromR in relations):
         relations[fromR] = dict()
+    if not(toR in relations):
+        relations[toR] = dict()
     relations[fromR][toR] = relation
+    relations[toR][fromR] = calculus.compute_converse(relation)
     return relations
 
 
-class PointCalculus:
-    def __init__(self, calculus, relations):
+class ConstraintSatisfactionProblem:
+    def __init__(self, calculus, relations, additional_info):
         self.calculus = calculus
         self.relations = relations
+        self.additional_info = additional_info
 
     def __str__(self):
-        return 'Calculus: \n' + str(self.calculus) + 'Relations:\n' + str(self.relations) + '\n'
+        printable_relations = valmap(lambda v: valmap(
+            self.calculus.relation_to_string, v), self.relations)
+        return 'Calculus: \n' + str(self.calculus) + 'Relations:\n' + str(printable_relations) + '\n'
 
     def lookup(self, fromR, toR):
         if fromR in self.relations and toR in self.relations[fromR]:
             return self.relations[fromR][toR]
         else:
-            return self.calculus.complement(0)
-    
+            return self.calculus.compute_complement(0)
+
     def getNodes(self):
         nodes = set()
         for k1, v in self.relations.items():
@@ -103,23 +110,33 @@ class PointCalculus:
             nodes.add(k1)
         return list(nodes)
 
+    def aclosure_time(self):
+        print("Running aclosure for " + self.additional_info)
+        start = time.time() * 1_000_000
+        result = self.aclosure()
+        print(time.time() * 1_000_000 - start)
+        print("Result = " + str(result))
+        return result
+
     def aclosure(self):
         s = True
         while s:
             s = False
             for i, j, k in itertools.product(self.getNodes(), repeat=3):
+                if i==j or j==k or i==k:
+                    continue
                 cij = self.lookup(i, j)
                 cjk = self.lookup(j, k)
                 cik = self.lookup(i, k)
-                newCik = intersect(cik, self.calculus.compose(cij, cjk))
+                newCik = intersect(
+                    cik, self.calculus.compute_composition(cij, cjk))
                 if cik != newCik:
                     s = True
-                    self.relations = insert(self.relations, i, k, newCik)
-                    self.relations = insert(
-                        self.relations, k, i, self.calculus.computeConverse(newCik))
+                    self.relations = insert_relation(self.calculus,
+                                                     self.relations, i, k, newCik)
                     if newCik == 0:
                         return False
-        print(self.relations)
+        return True
 
 
 def parseCalculus(fileName):
@@ -156,12 +173,11 @@ def parseCalculus(fileName):
             composition[compositionParts[0]
                         ][compositionParts[1]] = compositionParts[2:]
             line = calculusFile.readline().strip()
-        return BooleanSetAlgebra(relations, converse, composition)
+        return PointCalculus(relations, converse, composition)
 
 
-def parsePointRelations(calculus, fileName):
+def parse_csp(calculus, fileName):
     lines = [line.strip() for line in open(fileName)]
-    relations = dict()
     cspInstances = []
     currentRel = []
     for line in lines:
@@ -170,24 +186,29 @@ def parsePointRelations(calculus, fileName):
         else:
             cspInstances.append(currentRel)
             currentRel = []
+    qcsps = []
+
     for cspInstance in cspInstances:
+        relations = dict()
+        additional_info = cspInstance[0]
         for line in cspInstance[1:-1]:
-            print(line)
             parts = line.split()
             fromRel = parts[0]
             toRel = parts[1]
-            rel = sum(map(calculus.relToBinary, parts[3:-1]))
-
-            relations = insert(relations, fromRel, toRel, rel)
-            relations = insert(relations, toRel, fromRel,
-                               calculus.computeConverse(rel))
-            print(rel)
-        return PointCalculus(calculus, relations)  # FIXME
+            rel = sum(map(calculus.relation_to_binary, parts[3:-1]))
+            relations = insert_relation(
+                calculus, relations, fromRel, toRel, rel)
+        qcsps.append(ConstraintSatisfactionProblem(
+            calculus, relations, additional_info))
+    return qcsps
 
 
 if __name__ == '__main__':
-    allen = parseCalculus('allen.txt')
-    linear = parseCalculus('linear.txt')
+    linear_calculus = parseCalculus('linear.txt')
+    allen_calculus = parseCalculus('allen.txt')
 
-    linearRelations = parsePointRelations(linear, 'pointCalculus.txt')
-    print(str(linearRelations))
+    linear_csps = parse_csp(linear_calculus, 'pointCalculus.txt')
+    for csp in linear_csps:
+        csp.aclosure_time()
+        print()
+    #allen_csps = parse_csp(allen_calculus, '30x500_m_3_allen_eq1.csp')
