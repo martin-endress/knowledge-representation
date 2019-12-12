@@ -86,6 +86,15 @@ def insert_relation(calculus, relations, fromR, toR, relation):
     return relations
 
 
+def binary_count_ones(number):
+    count = 0
+    while number > 0:
+        if (number & 0b1) == 1:
+            count += 1
+        number = number >> 1
+    return count
+
+
 class ConstraintSatisfactionProblem:
     def __init__(self, calculus, relations, additional_info):
         self.calculus = calculus
@@ -95,7 +104,7 @@ class ConstraintSatisfactionProblem:
     def __str__(self):
         printable_relations = valmap(lambda v: valmap(
             self.calculus.relation_to_string, v), self.relations)
-        return 'Calculus: \n' + str(self.calculus) + 'Relations:\n' + str(printable_relations) + '\n'
+        return self.additional_info + '\nCalculus: \n' + str(self.calculus) + 'Relations:\n' + str(printable_relations) + '\n'
 
     def lookup(self, fromR, toR):
         if fromR in self.relations and toR in self.relations[fromR]:
@@ -112,15 +121,22 @@ class ConstraintSatisfactionProblem:
         return list(nodes)
 
     def aclosure_time(self, version):
-        print("Running aclosure for " + self.additional_info)
+        print(self.additional_info)
         start = time.time() * 1_000_000
         if version == 1:
             result = self.aclosure1()
         elif version == 15:
             result = self.aclosure15()
+        elif version == 2:
+            result = self.aclosure2()
         else:
             print("invalid version " + str(version))
-            result = -1
+            return -1
+        if self.additional_info.endswith("consistent"):
+            if result != self.additional_info.endswith("not consistent"):
+                print("correct")
+            else:
+                print("NOT CORRECT!!!")
         print(time.time() * 1_000_000 - start)
         print("Result = " + str(result))
         return result
@@ -183,6 +199,47 @@ class ConstraintSatisfactionProblem:
                         return False
         return True
 
+    def aclosure2(self):
+        edges = queue.PriorityQueue()
+        for i, j in itertools.product(self.getNodes(), repeat=2):
+            if i != j:
+                cij = self.lookup(i, j)
+                edges.put((binary_count_ones(self.lookup(i, j)), (i, j)))
+        while not(edges.empty()):
+            edge = edges.get()
+            i = edge[0]
+            j = edge[1]
+            for k in [k for k in self.getNodes() if (k != i and k != j)]:
+                # lookup
+                cij = self.lookup(i, j)
+                cjk = self.lookup(j, k)
+                cik = self.lookup(i, k)
+                ckj = self.lookup(k, j)
+                cki = self.lookup(k, i)
+
+                # calculate possible refinement
+                newCik = intersect(
+                    cik, self.calculus.compute_composition(cij, cjk))
+                newCkj = intersect(
+                    ckj, self.calculus.compute_composition(cki, cij))
+
+                # update
+                if cik != newCik:
+                    if newCik == 0:
+                        return False
+                    self.relations = insert_relation(self.calculus,
+                                                     self.relations, i, k, newCik)
+                    edges.put((i, k))
+                    edges.put((binary_count_ones(newCik), (i, k)))
+                if ckj != newCkj:
+                    self.relations = insert_relation(self.calculus,
+                                                     self.relations, k, j, newCkj)
+                    edges.put((k, j))
+                    edges.put((binary_count_ones(newCkj), (k, j)))
+                    if newCkj == 0:
+                        return False
+        return True
+
 
 def parseCalculus(fileName):
     with open(fileName, 'r') as calculusFile:
@@ -224,23 +281,27 @@ def parseCalculus(fileName):
 def parse_csp(calculus, fileName):
     lines = [line.strip() for line in open(fileName)]
     cspInstances = []
-    currentRel = []
+    current_csp = []
     for line in lines:
-        if line:
-            currentRel.append(line)
+        if line != ".":
+            current_csp.append(line)
         else:
-            cspInstances.append(currentRel)
-            currentRel = []
+            cspInstances.append(current_csp)
+            current_csp = []
     qcsps = []
-
     for cspInstance in cspInstances:
         relations = dict()
         additional_info = cspInstance[0]
-        for line in cspInstance[1:-1]:
+        for line in cspInstance[1:]:
             parts = line.split()
             fromRel = parts[0]
             toRel = parts[1]
-            rel = sum(map(calculus.relation_to_binary, parts[3:-1]))
+            # remove brackets
+            parts[2] = parts[2][1:]
+            parts[-1] = parts[-1][:-1]
+            # construct combined relation
+            rel = sum(map(calculus.relation_to_binary, parts[2:]))
+            # insert relation
             relations = insert_relation(
                 calculus, relations, fromRel, toRel, rel)
         qcsps.append(ConstraintSatisfactionProblem(
@@ -248,23 +309,21 @@ def parse_csp(calculus, fileName):
     return qcsps
 
 
-def point_calculus_test():
-    linear_calculus = parseCalculus('linear.txt')
+def point_calculus_test(version):
+    allen_calculus = parseCalculus('allen.txt')
 
-    print("1")
-    for csp in parse_csp(linear_calculus, 'pointCalculus.txt'):
-        csp.aclosure_time(1)
-        print()
-
-    print("1.5")
-    for csp in parse_csp(linear_calculus, 'pointCalculus.txt'):
-        csp.aclosure_time(15)
+    print("Aclosure with version " + str(version) + ":")
+    for csp in parse_csp(allen_calculus, 'allen_csps.txt'):
+        csp.aclosure_time(version)
         print()
 
 
 if __name__ == '__main__':
-    # point_calculus_test()
-    allen_calculus = parseCalculus('allen.txt')
-    # allen_csps = parse_csp(allen_calculus, '30x500_m_3_allen_eq1.csp')
-    homework = parse_csp(allen_calculus, "closure_interval_relations.csp")[0]
-    homework.aclosure_time(1)
+    point_calculus_test(1)
+    point_calculus_test(15)
+    #allen_calculus = parseCalculus('allen.txt')
+    #allen_csps = parse_csp(allen_calculus, '30x500_m_3_allen_eq1.csp')
+    #csp = allen_csps[0]
+    # csp.aclosure15()
+    #homework = parse_csp(allen_calculus, "closure_interval_relations.csp")[0]
+    # homework.aclosure_time(2)
