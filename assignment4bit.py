@@ -75,6 +75,9 @@ class PointCalculus:
                 rel.append(value)
         return rel
 
+    def get_base_relations(self, relation):
+        return list(filter(lambda x: x != 0, map(lambda x: relation & x, self.relationsBinary)))
+
 
 def insert_relation(calculus, relations, fromR, toR, relation):
     if not(fromR in relations):
@@ -240,6 +243,34 @@ class ConstraintSatisfactionProblem:
                         return False
         return True
 
+    def contains_only_base_relations(self):
+        for from_rel, to_rel in self.relations.items():
+            for to, relation in to_rel.items():
+                if binary_count_ones(relation) != 1:
+                    return False
+        return True
+
+    def refinement_search(self):
+        self.calculus.relationsBinary
+        if not(self.aclosure15()):
+            return False
+        if self.contains_only_base_relations():
+            return True
+        for from_rel, to_rel in self.relations.items():
+            for to, relation in to_rel.items():
+                n_base_relations = binary_count_ones(relation)
+                if n_base_relations != 1:
+                    print(relation)
+                    sub_csps = []
+                    for rel in self.calculus.get_base_relations(relation):
+                        tmp_csp = ConstraintSatisfactionProblem(
+                            self.calculus, self.relations, self.additional_info)
+                        tmp_csp.relations[from_rel][to] = rel
+                        tmp_csp.relations[to][from_rel] = self.calculus.compute_converse(rel)
+                        sub_csps.append(tmp_csp)
+                    return any(map(lambda csp:csp.aclosure15(), sub_csps))
+        return False
+
 
 def parseCalculus(fileName):
     with open(fileName, 'r') as calculusFile:
@@ -297,10 +328,9 @@ def parse_csp(calculus, fileName):
             fromRel = parts[0]
             toRel = parts[1]
             # remove brackets
-            parts[2] = parts[2][1:]
-            parts[-1] = parts[-1][:-1]
+            # FIX IN INPUT format = "FROM TO ( r1 rn )"
             # construct combined relation
-            rel = sum(map(calculus.relation_to_binary, parts[2:]))
+            rel = sum(map(calculus.relation_to_binary, parts[3:-1]))
             # insert relation
             relations = insert_relation(
                 calculus, relations, fromRel, toRel, rel)
@@ -309,18 +339,25 @@ def parse_csp(calculus, fileName):
     return qcsps
 
 
-def point_calculus_test(version):
+def point_calculus_test(version, csp_file):
     allen_calculus = parseCalculus('allen.txt')
 
     print("Aclosure with version " + str(version) + ":")
-    for csp in parse_csp(allen_calculus, 'allen_csps.txt'):
+    for csp in parse_csp(allen_calculus, csp_file):
         csp.aclosure_time(version)
         print()
+        print("trying refinement search")
+        print(str(csp.refinement_search()))
+    return
+    
+
+# 13 inconsistent
+# 17 inconsistent
+# 27 inconsistent
 
 
 if __name__ == '__main__':
-    point_calculus_test(1)
-    point_calculus_test(15)
+    point_calculus_test(1, 'closure_interval_relations.csp')
     #allen_calculus = parseCalculus('allen.txt')
     #allen_csps = parse_csp(allen_calculus, '30x500_m_3_allen_eq1.csp')
     #csp = allen_csps[0]
