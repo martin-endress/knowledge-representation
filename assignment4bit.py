@@ -16,7 +16,6 @@ def intersect(relation1, relation2):
 class PointCalculus:
     def __init__(self, relations, converse, composition):
         self.relations = relations
-        # map to binary representation
         self.relationsBinary = list(map(self.relation_to_binary, relations))
         self.converse = {self.relation_to_binary(k): self.relation_to_binary(
             v) for k, v in converse.items()}
@@ -34,13 +33,14 @@ class PointCalculus:
         """
         union all compositions from both relations using composition table of base relations
         """
-        composite = 0
-        for rel1 in self.relationsBinary:
-            if intersect(relation1, rel1):
-                for rel2 in self.relationsBinary:
-                    if intersect(relation2, rel2):
-                        composite = union(
-                            composite, self.composition[rel1][rel2])
+        if relation1 == 0 or relation2 == 0:
+            return 0
+        # TODO
+        # if relation1 == 2 ** 
+        #composite = 0
+        for rel1 in self.get_base_relations(relation1):
+            for rel2 in self.get_base_relations(relation2):
+                composite = union(composite, self.composition[rel1][rel2])
         return composite
 
     def compute_converse(self, relation):
@@ -73,7 +73,7 @@ class PointCalculus:
         for idx, value in enumerate(self.relations):
             if (pow(2, idx) & relation != 0):
                 rel.append(value)
-        return rel
+        return str(rel)
 
     def get_base_relations(self, relation):
         return list(filter(lambda x: x != 0, map(lambda x: relation & x, self.relationsBinary)))
@@ -99,10 +99,11 @@ def binary_count_ones(number):
 
 
 class ConstraintSatisfactionProblem:
-    def __init__(self, calculus, relations, additional_info):
+    def __init__(self, calculus, relations, additional_info, consistent_info):
         self.calculus = calculus
         self.relations = relations
         self.additional_info = additional_info
+        self.consistent_info = consistent_info
 
     def __str__(self):
         printable_relations = valmap(lambda v: valmap(
@@ -115,6 +116,12 @@ class ConstraintSatisfactionProblem:
         else:
             return self.calculus.compute_complement(0)
 
+    def clone_relations(self):
+        out = dict()
+        for k, v in self.relations.items():
+            out[k] = v.copy()
+        return out
+
     def getNodes(self):
         nodes = set()
         for k1, v in self.relations.items():
@@ -124,7 +131,6 @@ class ConstraintSatisfactionProblem:
         return list(nodes)
 
     def aclosure_time(self, version):
-        print(self.additional_info)
         start = time.time() * 1_000_000
         if version == 1:
             result = self.aclosure1()
@@ -135,13 +141,22 @@ class ConstraintSatisfactionProblem:
         else:
             print("invalid version " + str(version))
             return -1
-        if self.additional_info.endswith("consistent"):
-            if result != self.additional_info.endswith("not consistent"):
-                print("correct")
-            else:
-                print("NOT CORRECT!!!")
-        print(time.time() * 1_000_000 - start)
-        print("Result = " + str(result))
+        consistend_info = self.additional_info.split(':')[-1].strip()
+        if consistend_info == "consistent":
+            expected = True
+        elif consistend_info == "not consistent":
+            expected = False
+        else:
+            print("No information...")
+            expected = result
+        if result == expected:
+            print(self.additional_info.split(':')[
+                  0] + " result = " + str(result))
+        else:
+            print(self.additional_info.split(':')[0] + " expected = " +
+                  str(expected) + " result " + str(result))
+        #print(time.time() * 1_000_000 - start)
+        #print("Result = " + str(result))
         return result
 
     def aclosure1(self):
@@ -157,6 +172,8 @@ class ConstraintSatisfactionProblem:
                 newCik = intersect(
                     cik, self.calculus.compute_composition(cij, cjk))
                 if cik != newCik:
+                    # print("%s -> %s: %s -> %s" % (i, k, str(self.calculus.relation_to_string(cik)),
+                    #                              str(self.calculus.relation_to_string(newCik))))
                     s = True
                     self.relations = insert_relation(self.calculus,
                                                      self.relations, i, k, newCik)
@@ -251,24 +268,25 @@ class ConstraintSatisfactionProblem:
         return True
 
     def refinement_search(self):
-        self.calculus.relationsBinary
-        if not(self.aclosure15()):
+        if not(self.aclosure1()):
             return False
         if self.contains_only_base_relations():
             return True
+        found = False
         for from_rel, to_rel in self.relations.items():
             for to, relation in to_rel.items():
-                n_base_relations = binary_count_ones(relation)
-                if n_base_relations != 1:
-                    print(relation)
-                    sub_csps = []
+                if binary_count_ones(relation) != 1:
+                    found = True
                     for rel in self.calculus.get_base_relations(relation):
                         tmp_csp = ConstraintSatisfactionProblem(
-                            self.calculus, self.relations, self.additional_info)
+                            self.calculus, self.clone_relations(), self.additional_info, "")
                         tmp_csp.relations[from_rel][to] = rel
-                        tmp_csp.relations[to][from_rel] = self.calculus.compute_converse(rel)
-                        sub_csps.append(tmp_csp)
-                    return any(map(lambda csp:csp.aclosure15(), sub_csps))
+                        tmp_csp.relations[to][from_rel] = self.calculus.compute_converse(
+                            rel)
+                        if tmp_csp.refinement_search():
+                            return True
+            if found:
+                break
         return False
 
 
@@ -323,6 +341,8 @@ def parse_csp(calculus, fileName):
     for cspInstance in cspInstances:
         relations = dict()
         additional_info = cspInstance[0]
+        consistent_info = additional_info.split(
+            ':')[-1].strip() == "consistent"
         for line in cspInstance[1:]:
             parts = line.split()
             fromRel = parts[0]
@@ -335,7 +355,7 @@ def parse_csp(calculus, fileName):
             relations = insert_relation(
                 calculus, relations, fromRel, toRel, rel)
         qcsps.append(ConstraintSatisfactionProblem(
-            calculus, relations, additional_info))
+            calculus, relations, additional_info, consistent_info))
     return qcsps
 
 
@@ -344,12 +364,16 @@ def point_calculus_test(version, csp_file):
 
     print("Aclosure with version " + str(version) + ":")
     for csp in parse_csp(allen_calculus, csp_file):
-        csp.aclosure_time(version)
-        print()
-        print("trying refinement search")
-        print(str(csp.refinement_search()))
+        closed = csp.aclosure1()
+        closedR = csp.refinement_search()
+        correct = csp.consistent_info == closed and csp.consistent_info == closedR
+        print(" " + csp.additional_info)
+        if not correct:
+            print("expected =  " + str(csp.consistent_info))
+            print("aclosure =  " + str(closed))
+            print("refinement= " + str(closedR))
     return
-    
+
 
 # 13 inconsistent
 # 17 inconsistent
@@ -357,10 +381,5 @@ def point_calculus_test(version, csp_file):
 
 
 if __name__ == '__main__':
-    point_calculus_test(1, 'closure_interval_relations.csp')
-    #allen_calculus = parseCalculus('allen.txt')
-    #allen_csps = parse_csp(allen_calculus, '30x500_m_3_allen_eq1.csp')
-    #csp = allen_csps[0]
-    # csp.aclosure15()
-    #homework = parse_csp(allen_calculus, "closure_interval_relations.csp")[0]
-    # homework.aclosure_time(2)
+    point_calculus_test(1, 'allen_csps.txt')
+    point_calculus_test(1, 'ia_test_instances_10.txt')

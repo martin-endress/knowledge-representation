@@ -1,0 +1,868 @@
+# ord-horn maximal a-tractable subset of interval algebra: single relation per line
+eq 
+b 
+bi 
+d 
+eq d 
+di 
+eq di 
+o 
+eq o 
+b o 
+eq b o 
+d o 
+eq d o 
+b d o 
+eq b d o 
+di o 
+eq di o 
+b di o 
+eq b di o 
+oi 
+eq oi 
+bi oi 
+eq bi oi 
+d oi 
+eq d oi 
+bi d oi 
+eq bi d oi 
+di oi 
+eq di oi 
+bi di oi 
+eq bi di oi 
+d di o oi 
+eq d di o oi 
+b d di o oi 
+eq b d di o oi 
+bi d di o oi 
+eq bi d di o oi 
+b bi d di o oi 
+eq b bi d di o oi 
+m 
+b m 
+o m 
+eq o m 
+b o m 
+eq b o m 
+d o m 
+eq d o m 
+b d o m 
+eq b d o m 
+di o m 
+eq di o m 
+b di o m 
+eq b di o m 
+d di o oi m 
+eq d di o oi m 
+b d di o oi m 
+eq b d di o oi m 
+bi d di o oi m 
+eq bi d di o oi m 
+b bi d di o oi m 
+eq b bi d di o oi m 
+mi 
+bi mi 
+oi mi 
+eq oi mi 
+bi oi mi 
+eq bi oi mi 
+d oi mi 
+eq d oi mi 
+bi d oi mi 
+eq bi d oi mi 
+di oi mi 
+eq di oi mi 
+bi di oi mi 
+eq bi di oi mi 
+d di o oi mi 
+eq d di o oi mi 
+b d di o oi mi 
+eq b d di o oi mi 
+bi d di o oi mi 
+eq bi d di o oi mi 
+b bi d di o oi mi 
+eq b bi d di o oi mi 
+d di o oi m mi 
+eq d di o oi m mi 
+b d di o oi m mi 
+eq b d di o oi m mi 
+bi d di o oi m mi 
+eq bi d di o oi m mi 
+b bi d di o oi m mi 
+eq b bi d di o oi m mi 
+s 
+eq s 
+d s 
+eq d s 
+o s 
+eq o s 
+b o s 
+eq b o s 
+d o s 
+eq d o s 
+b d o s 
+eq b d o s 
+di o s 
+eq di o s 
+b di o s 
+eq b di o s 
+d oi s 
+eq d oi s 
+bi d oi s 
+eq bi d oi s 
+d di o oi s 
+eq d di o oi s 
+b d di o oi s 
+eq b d di o oi s 
+bi d di o oi s 
+eq bi d di o oi s 
+b bi d di o oi s 
+eq b bi d di o oi s 
+o m s 
+eq o m s 
+b o m s 
+eq b o m s 
+d o m s 
+eq d o m s 
+b d o m s 
+eq b d o m s 
+di o m s 
+eq di o m s 
+b di o m s 
+eq b di o m s 
+d di o oi m s 
+eq d di o oi m s 
+b d di o oi m s 
+eq b d di o oi m s 
+bi d di o oi m s 
+eq bi d di o oi m s 
+b bi d di o oi m s 
+eq b bi d di o oi m s 
+d oi mi s 
+eq d oi mi s 
+bi d oi mi s 
+eq bi d oi mi s 
+d di o oi mi s 
+eq d di o oi mi s 
+b d di o oi mi s 
+eq b d di o oi mi s 
+bi d di o oi mi s 
+eq bi d di o oi mi s 
+b bi d di o oi mi s 
+eq b bi d di o oi mi s 
+d di o oi m mi s 
+eq d di o oi m mi s 
+b d di o oi m mi s 
+eq b d di o oi m mi s 
+bi d di o oi m mi s 
+eq bi d di o oi m mi s 
+b bi d di o oi m mi s 
+eq b bi d di o oi m mi s 
+si 
+eq si 
+di si 
+eq di si 
+di o si 
+eq di o si 
+b di o si 
+eq b di o si 
+oi si 
+eq oi si 
+bi oi si 
+eq bi oi si 
+d oi si 
+eq d oi si 
+bi d oi si 
+eq bi d oi si 
+di oi si 
+eq di oi si 
+bi di oi si 
+eq bi di oi si 
+d di o oi si 
+eq d di o oi si 
+b d di o oi si 
+eq b d di o oi si 
+bi d di o oi si 
+eq bi d di o oi si 
+b bi d di o oi si 
+eq b bi d di o oi si 
+di o m si 
+eq di o m si 
+b di o m si 
+eq b di o m si 
+d di o oi m si 
+eq d di o oi m si 
+b d di o oi m si 
+eq b d di o oi m si 
+bi d di o oi m si 
+eq bi d di o oi m si 
+b bi d di o oi m si 
+eq b bi d di o oi m si 
+oi mi si 
+eq oi mi si 
+bi oi mi si 
+eq bi oi mi si 
+d oi mi si 
+eq d oi mi si 
+bi d oi mi si 
+eq bi d oi mi si 
+di oi mi si 
+eq di oi mi si 
+bi di oi mi si 
+eq bi di oi mi si 
+d di o oi mi si 
+eq d di o oi mi si 
+b d di o oi mi si 
+eq b d di o oi mi si 
+bi d di o oi mi si 
+eq bi d di o oi mi si 
+b bi d di o oi mi si 
+eq b bi d di o oi mi si 
+d di o oi m mi si 
+eq d di o oi m mi si 
+b d di o oi m mi si 
+eq b d di o oi m mi si 
+bi d di o oi m mi si 
+eq bi d di o oi m mi si 
+b bi d di o oi m mi si 
+eq b bi d di o oi m mi si 
+s si 
+eq s si 
+di o s si 
+eq di o s si 
+b di o s si 
+eq b di o s si 
+d oi s si 
+eq d oi s si 
+bi d oi s si 
+eq bi d oi s si 
+d di o oi s si 
+eq d di o oi s si 
+b d di o oi s si 
+eq b d di o oi s si 
+bi d di o oi s si 
+eq bi d di o oi s si 
+b bi d di o oi s si 
+eq b bi d di o oi s si 
+di o m s si 
+eq di o m s si 
+b di o m s si 
+eq b di o m s si 
+d di o oi m s si 
+eq d di o oi m s si 
+b d di o oi m s si 
+eq b d di o oi m s si 
+bi d di o oi m s si 
+eq bi d di o oi m s si 
+b bi d di o oi m s si 
+eq b bi d di o oi m s si 
+d oi mi s si 
+eq d oi mi s si 
+bi d oi mi s si 
+eq bi d oi mi s si 
+d di o oi mi s si 
+eq d di o oi mi s si 
+b d di o oi mi s si 
+eq b d di o oi mi s si 
+bi d di o oi mi s si 
+eq bi d di o oi mi s si 
+b bi d di o oi mi s si 
+eq b bi d di o oi mi s si 
+d di o oi m mi s si 
+eq d di o oi m mi s si 
+b d di o oi m mi s si 
+eq b d di o oi m mi s si 
+bi d di o oi m mi s si 
+eq bi d di o oi m mi s si 
+b bi d di o oi m mi s si 
+eq b bi d di o oi m mi s si 
+f 
+eq f 
+d f 
+eq d f 
+d o f 
+eq d o f 
+b d o f 
+eq b d o f 
+oi f 
+eq oi f 
+bi oi f 
+eq bi oi f 
+d oi f 
+eq d oi f 
+bi d oi f 
+eq bi d oi f 
+di oi f 
+eq di oi f 
+bi di oi f 
+eq bi di oi f 
+d di o oi f 
+eq d di o oi f 
+b d di o oi f 
+eq b d di o oi f 
+bi d di o oi f 
+eq bi d di o oi f 
+b bi d di o oi f 
+eq b bi d di o oi f 
+d o m f 
+eq d o m f 
+b d o m f 
+eq b d o m f 
+d di o oi m f 
+eq d di o oi m f 
+b d di o oi m f 
+eq b d di o oi m f 
+bi d di o oi m f 
+eq bi d di o oi m f 
+b bi d di o oi m f 
+eq b bi d di o oi m f 
+oi mi f 
+eq oi mi f 
+bi oi mi f 
+eq bi oi mi f 
+d oi mi f 
+eq d oi mi f 
+bi d oi mi f 
+eq bi d oi mi f 
+di oi mi f 
+eq di oi mi f 
+bi di oi mi f 
+eq bi di oi mi f 
+d di o oi mi f 
+eq d di o oi mi f 
+b d di o oi mi f 
+eq b d di o oi mi f 
+bi d di o oi mi f 
+eq bi d di o oi mi f 
+b bi d di o oi mi f 
+eq b bi d di o oi mi f 
+d di o oi m mi f 
+eq d di o oi m mi f 
+b d di o oi m mi f 
+eq b d di o oi m mi f 
+bi d di o oi m mi f 
+eq bi d di o oi m mi f 
+b bi d di o oi m mi f 
+eq b bi d di o oi m mi f 
+d s f 
+eq d s f 
+d o s f 
+eq d o s f 
+b d o s f 
+eq b d o s f 
+d oi s f 
+eq d oi s f 
+bi d oi s f 
+eq bi d oi s f 
+d di o oi s f 
+eq d di o oi s f 
+b d di o oi s f 
+eq b d di o oi s f 
+bi d di o oi s f 
+eq bi d di o oi s f 
+b bi d di o oi s f 
+eq b bi d di o oi s f 
+d o m s f 
+eq d o m s f 
+b d o m s f 
+eq b d o m s f 
+d di o oi m s f 
+eq d di o oi m s f 
+b d di o oi m s f 
+eq b d di o oi m s f 
+bi d di o oi m s f 
+eq bi d di o oi m s f 
+b bi d di o oi m s f 
+eq b bi d di o oi m s f 
+d oi mi s f 
+eq d oi mi s f 
+bi d oi mi s f 
+eq bi d oi mi s f 
+d di o oi mi s f 
+eq d di o oi mi s f 
+b d di o oi mi s f 
+eq b d di o oi mi s f 
+bi d di o oi mi s f 
+eq bi d di o oi mi s f 
+b bi d di o oi mi s f 
+eq b bi d di o oi mi s f 
+d di o oi m mi s f 
+eq d di o oi m mi s f 
+b d di o oi m mi s f 
+eq b d di o oi m mi s f 
+bi d di o oi m mi s f 
+eq bi d di o oi m mi s f 
+b bi d di o oi m mi s f 
+eq b bi d di o oi m mi s f 
+oi si f 
+eq oi si f 
+bi oi si f 
+eq bi oi si f 
+d oi si f 
+eq d oi si f 
+bi d oi si f 
+eq bi d oi si f 
+di oi si f 
+eq di oi si f 
+bi di oi si f 
+eq bi di oi si f 
+d di o oi si f 
+eq d di o oi si f 
+b d di o oi si f 
+eq b d di o oi si f 
+bi d di o oi si f 
+eq bi d di o oi si f 
+b bi d di o oi si f 
+eq b bi d di o oi si f 
+d di o oi m si f 
+eq d di o oi m si f 
+b d di o oi m si f 
+eq b d di o oi m si f 
+bi d di o oi m si f 
+eq bi d di o oi m si f 
+b bi d di o oi m si f 
+eq b bi d di o oi m si f 
+oi mi si f 
+eq oi mi si f 
+bi oi mi si f 
+eq bi oi mi si f 
+d oi mi si f 
+eq d oi mi si f 
+bi d oi mi si f 
+eq bi d oi mi si f 
+di oi mi si f 
+eq di oi mi si f 
+bi di oi mi si f 
+eq bi di oi mi si f 
+d di o oi mi si f 
+eq d di o oi mi si f 
+b d di o oi mi si f 
+eq b d di o oi mi si f 
+bi d di o oi mi si f 
+eq bi d di o oi mi si f 
+b bi d di o oi mi si f 
+eq b bi d di o oi mi si f 
+d di o oi m mi si f 
+eq d di o oi m mi si f 
+b d di o oi m mi si f 
+eq b d di o oi m mi si f 
+bi d di o oi m mi si f 
+eq bi d di o oi m mi si f 
+b bi d di o oi m mi si f 
+eq b bi d di o oi m mi si f 
+d oi s si f 
+eq d oi s si f 
+bi d oi s si f 
+eq bi d oi s si f 
+d di o oi s si f 
+eq d di o oi s si f 
+b d di o oi s si f 
+eq b d di o oi s si f 
+bi d di o oi s si f 
+eq bi d di o oi s si f 
+b bi d di o oi s si f 
+eq b bi d di o oi s si f 
+d di o oi m s si f 
+eq d di o oi m s si f 
+b d di o oi m s si f 
+eq b d di o oi m s si f 
+bi d di o oi m s si f 
+eq bi d di o oi m s si f 
+b bi d di o oi m s si f 
+eq b bi d di o oi m s si f 
+d oi mi s si f 
+eq d oi mi s si f 
+bi d oi mi s si f 
+eq bi d oi mi s si f 
+d di o oi mi s si f 
+eq d di o oi mi s si f 
+b d di o oi mi s si f 
+eq b d di o oi mi s si f 
+bi d di o oi mi s si f 
+eq bi d di o oi mi s si f 
+b bi d di o oi mi s si f 
+eq b bi d di o oi mi s si f 
+d di o oi m mi s si f 
+eq d di o oi m mi s si f 
+b d di o oi m mi s si f 
+eq b d di o oi m mi s si f 
+bi d di o oi m mi s si f 
+eq bi d di o oi m mi s si f 
+b bi d di o oi m mi s si f 
+eq b bi d di o oi m mi s si f 
+fi 
+eq fi 
+di fi 
+eq di fi 
+o fi 
+eq o fi 
+b o fi 
+eq b o fi 
+d o fi 
+eq d o fi 
+b d o fi 
+eq b d o fi 
+di o fi 
+eq di o fi 
+b di o fi 
+eq b di o fi 
+di oi fi 
+eq di oi fi 
+bi di oi fi 
+eq bi di oi fi 
+d di o oi fi 
+eq d di o oi fi 
+b d di o oi fi 
+eq b d di o oi fi 
+bi d di o oi fi 
+eq bi d di o oi fi 
+b bi d di o oi fi 
+eq b bi d di o oi fi 
+o m fi 
+eq o m fi 
+b o m fi 
+eq b o m fi 
+d o m fi 
+eq d o m fi 
+b d o m fi 
+eq b d o m fi 
+di o m fi 
+eq di o m fi 
+b di o m fi 
+eq b di o m fi 
+d di o oi m fi 
+eq d di o oi m fi 
+b d di o oi m fi 
+eq b d di o oi m fi 
+bi d di o oi m fi 
+eq bi d di o oi m fi 
+b bi d di o oi m fi 
+eq b bi d di o oi m fi 
+di oi mi fi 
+eq di oi mi fi 
+bi di oi mi fi 
+eq bi di oi mi fi 
+d di o oi mi fi 
+eq d di o oi mi fi 
+b d di o oi mi fi 
+eq b d di o oi mi fi 
+bi d di o oi mi fi 
+eq bi d di o oi mi fi 
+b bi d di o oi mi fi 
+eq b bi d di o oi mi fi 
+d di o oi m mi fi 
+eq d di o oi m mi fi 
+b d di o oi m mi fi 
+eq b d di o oi m mi fi 
+bi d di o oi m mi fi 
+eq bi d di o oi m mi fi 
+b bi d di o oi m mi fi 
+eq b bi d di o oi m mi fi 
+o s fi 
+eq o s fi 
+b o s fi 
+eq b o s fi 
+d o s fi 
+eq d o s fi 
+b d o s fi 
+eq b d o s fi 
+di o s fi 
+eq di o s fi 
+b di o s fi 
+eq b di o s fi 
+d di o oi s fi 
+eq d di o oi s fi 
+b d di o oi s fi 
+eq b d di o oi s fi 
+bi d di o oi s fi 
+eq bi d di o oi s fi 
+b bi d di o oi s fi 
+eq b bi d di o oi s fi 
+o m s fi 
+eq o m s fi 
+b o m s fi 
+eq b o m s fi 
+d o m s fi 
+eq d o m s fi 
+b d o m s fi 
+eq b d o m s fi 
+di o m s fi 
+eq di o m s fi 
+b di o m s fi 
+eq b di o m s fi 
+d di o oi m s fi 
+eq d di o oi m s fi 
+b d di o oi m s fi 
+eq b d di o oi m s fi 
+bi d di o oi m s fi 
+eq bi d di o oi m s fi 
+b bi d di o oi m s fi 
+eq b bi d di o oi m s fi 
+d di o oi mi s fi 
+eq d di o oi mi s fi 
+b d di o oi mi s fi 
+eq b d di o oi mi s fi 
+bi d di o oi mi s fi 
+eq bi d di o oi mi s fi 
+b bi d di o oi mi s fi 
+eq b bi d di o oi mi s fi 
+d di o oi m mi s fi 
+eq d di o oi m mi s fi 
+b d di o oi m mi s fi 
+eq b d di o oi m mi s fi 
+bi d di o oi m mi s fi 
+eq bi d di o oi m mi s fi 
+b bi d di o oi m mi s fi 
+eq b bi d di o oi m mi s fi 
+di si fi 
+eq di si fi 
+di o si fi 
+eq di o si fi 
+b di o si fi 
+eq b di o si fi 
+di oi si fi 
+eq di oi si fi 
+bi di oi si fi 
+eq bi di oi si fi 
+d di o oi si fi 
+eq d di o oi si fi 
+b d di o oi si fi 
+eq b d di o oi si fi 
+bi d di o oi si fi 
+eq bi d di o oi si fi 
+b bi d di o oi si fi 
+eq b bi d di o oi si fi 
+di o m si fi 
+eq di o m si fi 
+b di o m si fi 
+eq b di o m si fi 
+d di o oi m si fi 
+eq d di o oi m si fi 
+b d di o oi m si fi 
+eq b d di o oi m si fi 
+bi d di o oi m si fi 
+eq bi d di o oi m si fi 
+b bi d di o oi m si fi 
+eq b bi d di o oi m si fi 
+di oi mi si fi 
+eq di oi mi si fi 
+bi di oi mi si fi 
+eq bi di oi mi si fi 
+d di o oi mi si fi 
+eq d di o oi mi si fi 
+b d di o oi mi si fi 
+eq b d di o oi mi si fi 
+bi d di o oi mi si fi 
+eq bi d di o oi mi si fi 
+b bi d di o oi mi si fi 
+eq b bi d di o oi mi si fi 
+d di o oi m mi si fi 
+eq d di o oi m mi si fi 
+b d di o oi m mi si fi 
+eq b d di o oi m mi si fi 
+bi d di o oi m mi si fi 
+eq bi d di o oi m mi si fi 
+b bi d di o oi m mi si fi 
+eq b bi d di o oi m mi si fi 
+di o s si fi 
+eq di o s si fi 
+b di o s si fi 
+eq b di o s si fi 
+d di o oi s si fi 
+eq d di o oi s si fi 
+b d di o oi s si fi 
+eq b d di o oi s si fi 
+bi d di o oi s si fi 
+eq bi d di o oi s si fi 
+b bi d di o oi s si fi 
+eq b bi d di o oi s si fi 
+di o m s si fi 
+eq di o m s si fi 
+b di o m s si fi 
+eq b di o m s si fi 
+d di o oi m s si fi 
+eq d di o oi m s si fi 
+b d di o oi m s si fi 
+eq b d di o oi m s si fi 
+bi d di o oi m s si fi 
+eq bi d di o oi m s si fi 
+b bi d di o oi m s si fi 
+eq b bi d di o oi m s si fi 
+d di o oi mi s si fi 
+eq d di o oi mi s si fi 
+b d di o oi mi s si fi 
+eq b d di o oi mi s si fi 
+bi d di o oi mi s si fi 
+eq bi d di o oi mi s si fi 
+b bi d di o oi mi s si fi 
+eq b bi d di o oi mi s si fi 
+d di o oi m mi s si fi 
+eq d di o oi m mi s si fi 
+b d di o oi m mi s si fi 
+eq b d di o oi m mi s si fi 
+bi d di o oi m mi s si fi 
+eq bi d di o oi m mi s si fi 
+b bi d di o oi m mi s si fi 
+eq b bi d di o oi m mi s si fi 
+f fi 
+eq f fi 
+d o f fi 
+eq d o f fi 
+b d o f fi 
+eq b d o f fi 
+di oi f fi 
+eq di oi f fi 
+bi di oi f fi 
+eq bi di oi f fi 
+d di o oi f fi 
+eq d di o oi f fi 
+b d di o oi f fi 
+eq b d di o oi f fi 
+bi d di o oi f fi 
+eq bi d di o oi f fi 
+b bi d di o oi f fi 
+eq b bi d di o oi f fi 
+d o m f fi 
+eq d o m f fi 
+b d o m f fi 
+eq b d o m f fi 
+d di o oi m f fi 
+eq d di o oi m f fi 
+b d di o oi m f fi 
+eq b d di o oi m f fi 
+bi d di o oi m f fi 
+eq bi d di o oi m f fi 
+b bi d di o oi m f fi 
+eq b bi d di o oi m f fi 
+di oi mi f fi 
+eq di oi mi f fi 
+bi di oi mi f fi 
+eq bi di oi mi f fi 
+d di o oi mi f fi 
+eq d di o oi mi f fi 
+b d di o oi mi f fi 
+eq b d di o oi mi f fi 
+bi d di o oi mi f fi 
+eq bi d di o oi mi f fi 
+b bi d di o oi mi f fi 
+eq b bi d di o oi mi f fi 
+d di o oi m mi f fi 
+eq d di o oi m mi f fi 
+b d di o oi m mi f fi 
+eq b d di o oi m mi f fi 
+bi d di o oi m mi f fi 
+eq bi d di o oi m mi f fi 
+b bi d di o oi m mi f fi 
+eq b bi d di o oi m mi f fi 
+d o s f fi 
+eq d o s f fi 
+b d o s f fi 
+eq b d o s f fi 
+d di o oi s f fi 
+eq d di o oi s f fi 
+b d di o oi s f fi 
+eq b d di o oi s f fi 
+bi d di o oi s f fi 
+eq bi d di o oi s f fi 
+b bi d di o oi s f fi 
+eq b bi d di o oi s f fi 
+d o m s f fi 
+eq d o m s f fi 
+b d o m s f fi 
+eq b d o m s f fi 
+d di o oi m s f fi 
+eq d di o oi m s f fi 
+b d di o oi m s f fi 
+eq b d di o oi m s f fi 
+bi d di o oi m s f fi 
+eq bi d di o oi m s f fi 
+b bi d di o oi m s f fi 
+eq b bi d di o oi m s f fi 
+d di o oi mi s f fi 
+eq d di o oi mi s f fi 
+b d di o oi mi s f fi 
+eq b d di o oi mi s f fi 
+bi d di o oi mi s f fi 
+eq bi d di o oi mi s f fi 
+b bi d di o oi mi s f fi 
+eq b bi d di o oi mi s f fi 
+d di o oi m mi s f fi 
+eq d di o oi m mi s f fi 
+b d di o oi m mi s f fi 
+eq b d di o oi m mi s f fi 
+bi d di o oi m mi s f fi 
+eq bi d di o oi m mi s f fi 
+b bi d di o oi m mi s f fi 
+eq b bi d di o oi m mi s f fi 
+di oi si f fi 
+eq di oi si f fi 
+bi di oi si f fi 
+eq bi di oi si f fi 
+d di o oi si f fi 
+eq d di o oi si f fi 
+b d di o oi si f fi 
+eq b d di o oi si f fi 
+bi d di o oi si f fi 
+eq bi d di o oi si f fi 
+b bi d di o oi si f fi 
+eq b bi d di o oi si f fi 
+d di o oi m si f fi 
+eq d di o oi m si f fi 
+b d di o oi m si f fi 
+eq b d di o oi m si f fi 
+bi d di o oi m si f fi 
+eq bi d di o oi m si f fi 
+b bi d di o oi m si f fi 
+eq b bi d di o oi m si f fi 
+di oi mi si f fi 
+eq di oi mi si f fi 
+bi di oi mi si f fi 
+eq bi di oi mi si f fi 
+d di o oi mi si f fi 
+eq d di o oi mi si f fi 
+b d di o oi mi si f fi 
+eq b d di o oi mi si f fi 
+bi d di o oi mi si f fi 
+eq bi d di o oi mi si f fi 
+b bi d di o oi mi si f fi 
+eq b bi d di o oi mi si f fi 
+d di o oi m mi si f fi 
+eq d di o oi m mi si f fi 
+b d di o oi m mi si f fi 
+eq b d di o oi m mi si f fi 
+bi d di o oi m mi si f fi 
+eq bi d di o oi m mi si f fi 
+b bi d di o oi m mi si f fi 
+eq b bi d di o oi m mi si f fi 
+d di o oi s si f fi 
+eq d di o oi s si f fi 
+b d di o oi s si f fi 
+eq b d di o oi s si f fi 
+bi d di o oi s si f fi 
+eq bi d di o oi s si f fi 
+b bi d di o oi s si f fi 
+eq b bi d di o oi s si f fi 
+d di o oi m s si f fi 
+eq d di o oi m s si f fi 
+b d di o oi m s si f fi 
+eq b d di o oi m s si f fi 
+bi d di o oi m s si f fi 
+eq bi d di o oi m s si f fi 
+b bi d di o oi m s si f fi 
+eq b bi d di o oi m s si f fi 
+d di o oi mi s si f fi 
+eq d di o oi mi s si f fi 
+b d di o oi mi s si f fi 
+eq b d di o oi mi s si f fi 
+bi d di o oi mi s si f fi 
+eq bi d di o oi mi s si f fi 
+b bi d di o oi mi s si f fi 
+eq b bi d di o oi mi s si f fi 
+d di o oi m mi s si f fi 
+eq d di o oi m mi s si f fi 
+b d di o oi m mi s si f fi 
+eq b d di o oi m mi s si f fi 
+bi d di o oi m mi s si f fi 
+eq bi d di o oi m mi s si f fi 
+b bi d di o oi m mi s si f fi 
+eq b bi d di o oi m mi s si f fi 
