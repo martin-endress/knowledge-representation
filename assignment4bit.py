@@ -1,7 +1,6 @@
 import itertools
 import time
 import queue
-from toolz import valmap
 from functools import reduce
 
 
@@ -30,7 +29,10 @@ def binary_count_ones(number):
         number >>= 1
     return count
 
-priority_mapping = {0:0, 1:1, 2:2, 4:2, 8:3, 16:3, 32:3, 64:3, 128:3, 256:3, 512:3, 1024:3, 2048:3, 4096:3}
+
+priority_mapping = {0: 0, 1: 1, 2: 2, 4: 2, 8: 3, 16: 3, 32: 3,
+                    64: 3, 128: 3, 256: 3, 512: 3, 1024: 3, 2048: 3, 4096: 3}
+
 
 class Calculus:
     def __init__(self, relations, converse, composition):
@@ -103,13 +105,12 @@ class Calculus:
             if intersect(baseRel, relation):
                 rel.append(baseRel)
         return rel
-    
+
     def calculate_priority(self, relation):
         priority = 0
         for r in self.get_base_relations(relation):
             priority += priority_mapping[r]
         return priority
-
 
 
 class ConstraintSatisfactionProblem:
@@ -120,9 +121,7 @@ class ConstraintSatisfactionProblem:
         self.consistent_info = consistent_info
 
     def __str__(self):
-        printable_relations = valmap(lambda v: valmap(
-            self.calculus.relation_to_string, v), self.relations)
-        return self.additional_info + '\nCalculus: \n' + str(self.calculus) + 'Relations:\n' + str(printable_relations) + '\n'
+        return self.additional_info + '\nCalculus: \n' + str(self.calculus) + 'Relations:\n TODO'
 
     def lookup(self, fromR, toR):
         if fromR in self.relations and toR in self.relations[fromR]:
@@ -296,6 +295,7 @@ class ConstraintSatisfactionProblem:
                     return False
         return False
 
+
 def parseCalculus(fileName):
     with open(fileName, 'r') as calculusFile:
         calculusFile.readline()                    # header
@@ -367,17 +367,19 @@ def parse_csp(calculus, fileName):
 
 def reason_with_csp_file(csp_file):
     allen_calculus = parseCalculus('allen.txt')
-
-    for csp in parse_csp(allen_calculus, csp_file):
-        print(csp.additional_info)
+    consistent = 0
+    csps = parse_csp(allen_calculus, csp_file)
+    for csp in csps:
         closed = csp.refinement_search1()
-        correct = csp.consistent_info == closed
-        if not correct:
-            print("expected = " + str(csp.consistent_info))
-            print("actual   = " + str(closed))
+        print(csp.additional_info + str(closed))
+        consistent += closed
+        #correct = csp.consistent_info == closed
+        # if not correct:
+        #    print("expected = " + str(csp.consistent_info))
+        #    print("actual   = " + str(closed))
+    print(str(100.0 * consistent / len(csps)) + "% consistent")
     return
 
-if __name__ == '__main__':
-    reason_with_csp_file('allen_csps.txt')
-    reason_with_csp_file('ia_test_instances_10.txt')
 
+if __name__ == '__main__':
+    reason_with_csp_file('allen_csp.txt')
