@@ -13,7 +13,26 @@ def intersect(relation1, relation2):
     return relation1 & relation2
 
 
-class PointCalculus:
+def insert_relation(calculus, relations, fromR, toR, relation):
+    if not(fromR in relations):
+        relations[fromR] = dict()
+    if not(toR in relations):
+        relations[toR] = dict()
+    relations[fromR][toR] = relation
+    relations[toR][fromR] = calculus.compute_converse(relation)
+    return relations
+
+
+def binary_count_ones(number):
+    count = 0
+    while number:
+        count += number & 1
+        number >>= 1
+    return count
+
+priority_mapping = {0:0, 1:1, 2:2, 4:2, 8:3, 16:3, 32:3, 64:3, 128:3, 256:3, 512:3, 1024:3, 2048:3, 4096:3}
+
+class Calculus:
     def __init__(self, relations, converse, composition):
         self.relations = relations
         self.relationsBinary = list(map(self.relation_to_binary, relations))
@@ -23,6 +42,7 @@ class PointCalculus:
                             {self.relation_to_binary(k1): reduce(union, map(self.relation_to_binary, v1))
                              for k1, v1 in v.items()}
                             for k, v in composition.items()}
+        self.universe = (2 ** len(relations)) - 1
 
     def __str__(self):
         return 'relations:\n' + str(self.relations) + '\n' + \
@@ -35,9 +55,9 @@ class PointCalculus:
         """
         if relation1 == 0 or relation2 == 0:
             return 0
-        # TODO
-        # if relation1 == 2 ** 
-        #composite = 0
+        if relation1 == self.universe or relation2 == self.universe:
+            return self.universe
+        composite = 0
         for rel1 in self.get_base_relations(relation1):
             for rel2 in self.get_base_relations(relation2):
                 composite = union(composite, self.composition[rel1][rel2])
@@ -76,26 +96,20 @@ class PointCalculus:
         return str(rel)
 
     def get_base_relations(self, relation):
-        return list(filter(lambda x: x != 0, map(lambda x: relation & x, self.relationsBinary)))
+        if binary_count_ones(relation) == 1:
+            return [relation]
+        rel = []
+        for baseRel in self.relationsBinary:
+            if intersect(baseRel, relation):
+                rel.append(baseRel)
+        return rel
+    
+    def calculate_priority(self, relation):
+        priority = 0
+        for r in self.get_base_relations(relation):
+            priority += priority_mapping[r]
+        return priority
 
-
-def insert_relation(calculus, relations, fromR, toR, relation):
-    if not(fromR in relations):
-        relations[fromR] = dict()
-    if not(toR in relations):
-        relations[toR] = dict()
-    relations[fromR][toR] = relation
-    relations[toR][fromR] = calculus.compute_converse(relation)
-    return relations
-
-
-def binary_count_ones(number):
-    count = 0
-    while number > 0:
-        if (number & 0b1) == 1:
-            count += 1
-        number = number >> 1
-    return count
 
 
 class ConstraintSatisfactionProblem:
@@ -172,8 +186,6 @@ class ConstraintSatisfactionProblem:
                 newCik = intersect(
                     cik, self.calculus.compute_composition(cij, cjk))
                 if cik != newCik:
-                    # print("%s -> %s: %s -> %s" % (i, k, str(self.calculus.relation_to_string(cik)),
-                    #                              str(self.calculus.relation_to_string(newCik))))
                     s = True
                     self.relations = insert_relation(self.calculus,
                                                      self.relations, i, k, newCik)
@@ -224,9 +236,9 @@ class ConstraintSatisfactionProblem:
         for i, j in itertools.product(self.getNodes(), repeat=2):
             if i != j:
                 cij = self.lookup(i, j)
-                edges.put((binary_count_ones(self.lookup(i, j)), (i, j)))
+                edges.put((binary_count_ones(cij), (i, j)))
         while not(edges.empty()):
-            edge = edges.get()
+            edge = edges.get()[1]
             i = edge[0]
             j = edge[1]
             for k in [k for k in self.getNodes() if (k != i and k != j)]:
@@ -249,26 +261,24 @@ class ConstraintSatisfactionProblem:
                         return False
                     self.relations = insert_relation(self.calculus,
                                                      self.relations, i, k, newCik)
-                    edges.put((i, k))
                     edges.put((binary_count_ones(newCik), (i, k)))
                 if ckj != newCkj:
-                    self.relations = insert_relation(self.calculus,
-                                                     self.relations, k, j, newCkj)
-                    edges.put((k, j))
-                    edges.put((binary_count_ones(newCkj), (k, j)))
                     if newCkj == 0:
                         return False
+                    self.relations = insert_relation(self.calculus,
+                                                     self.relations, k, j, newCkj)
+                    edges.put((binary_count_ones(newCkj), (k, j)))
         return True
 
     def contains_only_base_relations(self):
-        for from_rel, to_rel in self.relations.items():
-            for to, relation in to_rel.items():
+        for _, to_rel in self.relations.items():
+            for _, relation in to_rel.items():
                 if binary_count_ones(relation) != 1:
                     return False
         return True
 
-    def refinement_search(self):
-        if not(self.aclosure1()):
+    def refinement_search1(self):
+        if not(self.aclosure2()):
             return False
         if self.contains_only_base_relations():
             return True
@@ -283,12 +293,11 @@ class ConstraintSatisfactionProblem:
                         tmp_csp.relations[from_rel][to] = rel
                         tmp_csp.relations[to][from_rel] = self.calculus.compute_converse(
                             rel)
-                        if tmp_csp.refinement_search():
+                        if tmp_csp.refinement_search1():
                             return True
             if found:
                 break
         return False
-
 
 def parseCalculus(fileName):
     with open(fileName, 'r') as calculusFile:
@@ -324,7 +333,7 @@ def parseCalculus(fileName):
             composition[compositionParts[0]
                         ][compositionParts[1]] = compositionParts[2:]
             line = calculusFile.readline().strip()
-        return PointCalculus(relations, converse, composition)
+        return Calculus(relations, converse, composition)
 
 
 def parse_csp(calculus, fileName):
@@ -359,27 +368,19 @@ def parse_csp(calculus, fileName):
     return qcsps
 
 
-def point_calculus_test(version, csp_file):
+def reason_with_csp_file(csp_file):
     allen_calculus = parseCalculus('allen.txt')
 
-    print("Aclosure with version " + str(version) + ":")
     for csp in parse_csp(allen_calculus, csp_file):
-        closed = csp.aclosure1()
-        closedR = csp.refinement_search()
-        correct = csp.consistent_info == closed and csp.consistent_info == closedR
-        print(" " + csp.additional_info)
+        print(csp.additional_info)
+        closed = csp.refinement_search1()
+        correct = csp.consistent_info == closed
         if not correct:
-            print("expected =  " + str(csp.consistent_info))
-            print("aclosure =  " + str(closed))
-            print("refinement= " + str(closedR))
+            print("expected = " + str(csp.consistent_info))
+            print("actual   = " + str(closed))
     return
 
-
-# 13 inconsistent
-# 17 inconsistent
-# 27 inconsistent
-
-
 if __name__ == '__main__':
-    point_calculus_test(1, 'allen_csps.txt')
-    point_calculus_test(1, 'ia_test_instances_10.txt')
+    reason_with_csp_file('allen_csps.txt')
+    reason_with_csp_file('ia_test_instances_10 copy.txt')
+
