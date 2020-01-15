@@ -193,7 +193,7 @@ class ConstraintSatisfactionProblem:
         return True
 
     def aclosure15(self):
-        edges = queue.SimpleQueue()
+        edges = queue.Queue()
         for i, j in itertools.product(self.getNodes(), repeat=2):
             if i != j:
                 edges.put((i, j))
@@ -233,8 +233,10 @@ class ConstraintSatisfactionProblem:
     def aclosure2(self):
         edges = queue.PriorityQueue()
         for i, j in itertools.product(self.getNodes(), repeat=2):
-            if i != j:
+            if i < j:
                 cij = self.lookup(i, j)
+                if cij == 0:
+                    return False
                 edges.put((binary_count_ones(cij), (i, j)))
         while not(edges.empty()):
             edge = edges.get()[1]
@@ -351,8 +353,8 @@ def parse_csp(calculus, fileName):
             ':')[-1].strip() == "consistent"
         for line in cspInstance[1:]:
             parts = line.split()
-            fromRel = parts[0]
-            toRel = parts[1]
+            fromRel = int(parts[0])
+            toRel = int(parts[1])
             # remove brackets
             # FIX IN INPUT format = "FROM TO ( r1 rn )"
             # construct combined relation
@@ -369,6 +371,7 @@ def reason_with_csp_file(csp_file):
     allen_calculus = parseCalculus('allen.txt')
     consistent = 0
     csps = parse_csp(allen_calculus, csp_file)
+    t = time.time()
     for csp in csps:
         closed = csp.refinement_search1()
         print(csp.additional_info + str(closed))
@@ -377,9 +380,10 @@ def reason_with_csp_file(csp_file):
         # if not correct:
         #    print("expected = " + str(csp.consistent_info))
         #    print("actual   = " + str(closed))
+    print(time.time() - t)
     print(str(100.0 * consistent / len(csps)) + "% consistent")
     return
 
 
 if __name__ == '__main__':
-    reason_with_csp_file('allen_csp.txt')
+    reason_with_csp_file('ia_test_instances_10.txt')
