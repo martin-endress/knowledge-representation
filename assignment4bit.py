@@ -282,11 +282,9 @@ class ConstraintSatisfactionProblem:
             return False
         if self.contains_only_base_relations():
             return True
-        found = False
         for from_rel, to_rel in self.relations.items():
             for to, relation in to_rel.items():
                 if binary_count_ones(relation) != 1:
-                    found = True
                     for rel in self.calculus.get_base_relations(relation):
                         tmp_csp = ConstraintSatisfactionProblem(
                             self.calculus, self.clone_relations(), self.additional_info, "")
@@ -295,8 +293,7 @@ class ConstraintSatisfactionProblem:
                             rel)
                         if tmp_csp.refinement_search1():
                             return True
-            if found:
-                break
+                    return False
         return False
 
 def parseCalculus(fileName):
@@ -382,5 +379,5 @@ def reason_with_csp_file(csp_file):
 
 if __name__ == '__main__':
     reason_with_csp_file('allen_csps.txt')
-    reason_with_csp_file('ia_test_instances_10 copy.txt')
+    reason_with_csp_file('ia_test_instances_10.txt')
 
